@@ -9,6 +9,7 @@ _NUM_BATCHES = 16
 _TIME_STEPS = 150
 _RENDER = True
 
+
 def generate_action(prev_action):
     if np.random.randint(3) % 3:
         return prev_action
@@ -25,10 +26,12 @@ def generate_action(prev_action):
     action[1] = (action[1] + 1) / 2
     action[2] = (action[2] + 1) / 2
 
-    return action*mask
+    return action * mask
+
 
 def normalize_observation(observation):
-	return observation.astype('float32') / 255.
+    return observation.astype('float32') / 255.
+
 
 def simulate_batch(batch_num):
     env = CarRacing()
@@ -58,14 +61,18 @@ def simulate_batch(batch_num):
 
     print("Saving dataset for batch {}".format(batch_num))
     np.save('../data/obs_data_VAE_{}'.format(batch_num), obs_data)
-    
+
     env.close()
+
 
 def main():
     print("Generating data for env CarRacing-v0")
 
-    with mp.Pool(mp.cpu_count()) as p:
-        p.map(simulate_batch, range(_NUM_BATCHES))
+    #with mp.Pool(mp.cpu_count()) as p:
+    #    p.map(simulate_batch, range(_NUM_BATCHES))
+
+    simulate_batch(0)
+
 
 if __name__ == "__main__":
     main()
