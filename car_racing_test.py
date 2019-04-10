@@ -1,3 +1,5 @@
+import os
+
 import numpy as np
 import gym
 from gym.envs.box2d.car_dynamics import Car
@@ -20,7 +22,9 @@ def main():
 
     env.reset()
 
-    for i in range(30):
+    observations = []
+
+    for i in range(1000):
         position = np.random.randint(len(env.track))
         angle = np.random.randint(-20, 20)
         x_off = np.random.randint(-20, 20)
@@ -31,8 +35,22 @@ def main():
 
         observation = env.step(None)[0]
 
-        plt.imshow(observation[:CROP_SIZE, CROP_W_OFFSET:CROP_SIZE+CROP_W_OFFSET, :])
-        plt.show()
+        cropped_obs = normalize_observation(observation[:CROP_SIZE, CROP_W_OFFSET:CROP_SIZE+CROP_W_OFFSET, :])
+
+        if i % 10 == 0:
+            plt.imshow(cropped_obs)
+            plt.show()
+
+        observations.append(cropped_obs)
+
+    observations = np.array(observations, dtype=np.float32)
+
+    if not os.path.exists("data"):
+        os.mkdir("data")
+
+    np.save("data/observations2.npy", observations)
+
+
 
 
 if __name__ == "__main__":
