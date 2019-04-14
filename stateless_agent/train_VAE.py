@@ -1,6 +1,7 @@
 import tensorflow as tf
 import numpy as np
 import glob, random, os
+import matplotlib.pyplot as plt
 
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 
@@ -37,7 +38,7 @@ class Network(object):
         x = tf.layers.conv2d(x, filters=32, kernel_size=4, strides=2, padding='valid', activation=tf.nn.relu)
         x = tf.layers.conv2d(x, filters=64, kernel_size=4, strides=2, padding='valid', activation=tf.nn.relu)
         x = tf.layers.conv2d(x, filters=128, kernel_size=4, strides=2, padding='valid', activation=tf.nn.relu)
-        x = tf.layers.conv2d(x, filters=256, kernel_size=4, strides=2, padding='valid', activation=tf.nn.relu)
+        x = tf.layers.conv2d(x, filters=128, kernel_size=4, strides=2, padding='valid', activation=tf.nn.relu)
 
         x = tf.layers.flatten(x)
         z_mu = tf.layers.dense(x, units=32, name='z_mu')
@@ -45,8 +46,8 @@ class Network(object):
         return z_mu, z_logvar
 
     def decoder(self, z):
-        x = tf.layers.dense(z, 1024, activation=None)
-        x = tf.reshape(x, [-1, 1, 1, 1024])
+        x = tf.layers.dense(z, 512, activation=None)
+        x = tf.reshape(x, [-1, 1, 1, 512])
         x = tf.layers.conv2d_transpose(x, filters=128, kernel_size=5, strides=2, padding='valid', activation=tf.nn.relu)
         x = tf.layers.conv2d_transpose(x, filters=64, kernel_size=5, strides=2, padding='valid', activation=tf.nn.relu)
         x = tf.layers.conv2d_transpose(x, filters=32, kernel_size=6, strides=2, padding='valid', activation=tf.nn.relu)
@@ -101,9 +102,17 @@ def train_vae():
 
             if np.isnan(loss_value):
                 raise ValueError('Loss value is NaN')
-            if step % 2 == 0 and step > 0:
-                print('step {}: training loss {:.6f}'.format(step, loss_value))
+
+            print('step {}: training loss {:.6f}'.format(step, loss_value))
+
+            if step % 10 == 0 and step > 0:
                 save_path = saver.save(sess, model_name, global_step=global_step)
+
+            if step % 5 == 0 and step > 0:
+                resized, reconstructions = sess.run([network.resized_image, network.reconstructions], feed_dict={network.image: images})
+                plt.imshow(np.concatenate((resized[0], reconstructions[0]), axis=1))
+                plt.show()
+
             if loss_value <= 35:
                 print('step {}: training loss {:.6f}'.format(step, loss_value))
                 save_path = saver.save(sess, model_name, global_step=global_step)
@@ -129,7 +138,7 @@ def load_vae():
         sess.run(init)
 
         saver = tf.train.Saver(max_to_keep=1)
-        training_data = data_iterator(batch_size=128)
+        training_data = data_iterator(batch_size=256)
 
         try:
             saver.restore(sess, tf.train.latest_checkpoint(model_path))

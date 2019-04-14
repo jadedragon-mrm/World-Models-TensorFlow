@@ -1,7 +1,8 @@
 data
 __pycache__/
 logdir/
-saved_models
+stateless_agent/saved_models_o
 *npy
 gym
 .idea/
+/stateless_agent/saved_models/
