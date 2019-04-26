@@ -9,24 +9,25 @@ model_path = "saved_models/"
 model_name = model_path + 'model'
 
 #data_files = glob.glob('../data/obs_data_VAE_*')
-data_files = glob.glob('../data/observations*.npy')
-print(data_files)
-obs_data = np.load(random.sample(data_files, 1)[0])
+#data_files = glob.glob('../data/observations*.npy')
+#print(data_files)
+#obs_data = np.load(random.sample(data_files, 1)[0])
+obs_data = np.load('../data/observations.npy')
 
 
 class Network(object):
     # Create model
     def __init__(self):
-        self.image = tf.placeholder(tf.float32, [None, 84, 84, 3], name='image')
-        self.resized_image = tf.image.resize_images(self.image, [64, 64])
-        tf.summary.image('resized_image', self.resized_image, 20)
+        self.image = tf.placeholder(tf.float32, [None, 64, 64, 3], name='image')
+        self.resized_image = self.image #tf.image.resize_images(self.image, [64, 64])
+        #tf.summary.image('resized_image', self.resized_image, 20)
 
         self.z_mu, self.z_logvar = self.encoder(self.resized_image)
         self.z = self.sample_z(self.z_mu, self.z_logvar)
         self.reconstructions = self.decoder(self.z)
-        tf.summary.image('reconstructions', self.reconstructions, 20)
+        #tf.summary.image('reconstructions', self.reconstructions, 20)
 
-        self.merged = tf.summary.merge_all()
+        self.merged = tf.zeros(1) #tf.summary.merge_all()
 
         self.loss = self.compute_loss()
 
@@ -98,7 +99,7 @@ def train_vae():
             images = next(training_data)
             _, loss_value, summary = sess.run([train_op, network.loss, network.merged],
                                               feed_dict={network.image: images})
-            writer.add_summary(summary, step)
+            #writer.add_summary(summary, step)
 
             if np.isnan(loss_value):
                 raise ValueError('Loss value is NaN')
