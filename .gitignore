@@ -6,3 +6,4 @@ stateless_agent/saved_models_o
 gym
 .idea/
 /stateless_agent/saved_models/
+/stateless_agent/saved_models_small/

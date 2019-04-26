@@ -39,7 +39,7 @@ class Network(object):
         x = tf.layers.conv2d(x, filters=32, kernel_size=4, strides=2, padding='valid', activation=tf.nn.relu)
         x = tf.layers.conv2d(x, filters=64, kernel_size=4, strides=2, padding='valid', activation=tf.nn.relu)
         x = tf.layers.conv2d(x, filters=128, kernel_size=4, strides=2, padding='valid', activation=tf.nn.relu)
-        x = tf.layers.conv2d(x, filters=128, kernel_size=4, strides=2, padding='valid', activation=tf.nn.relu)
+        x = tf.layers.conv2d(x, filters=256, kernel_size=4, strides=2, padding='valid', activation=tf.nn.relu)
 
         x = tf.layers.flatten(x)
         z_mu = tf.layers.dense(x, units=32, name='z_mu')
@@ -47,8 +47,8 @@ class Network(object):
         return z_mu, z_logvar
 
     def decoder(self, z):
-        x = tf.layers.dense(z, 512, activation=None)
-        x = tf.reshape(x, [-1, 1, 1, 512])
+        x = tf.layers.dense(z, 1024, activation=None)
+        x = tf.reshape(x, [-1, 1, 1, 1024])
         x = tf.layers.conv2d_transpose(x, filters=128, kernel_size=5, strides=2, padding='valid', activation=tf.nn.relu)
         x = tf.layers.conv2d_transpose(x, filters=64, kernel_size=5, strides=2, padding='valid', activation=tf.nn.relu)
         x = tf.layers.conv2d_transpose(x, filters=32, kernel_size=6, strides=2, padding='valid', activation=tf.nn.relu)
