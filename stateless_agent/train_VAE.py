@@ -106,10 +106,10 @@ def train_vae():
 
             print('step {}: training loss {:.6f}'.format(step, loss_value))
 
-            if step % 10 == 0 and step > 0:
+            if step % 100 == 0 and step > 0:
                 save_path = saver.save(sess, model_name, global_step=global_step)
 
-            if step % 5 == 0 and step > 0:
+            if step % 50 == 0 and step > 0:
                 resized, reconstructions = sess.run([network.resized_image, network.reconstructions], feed_dict={network.image: images})
                 plt.imshow(np.concatenate((resized[0], reconstructions[0]), axis=1))
                 plt.show()
