@@ -22,7 +22,7 @@ def main():
 
     env = CarRacing()
 
-    for obs_idx in range(2, 10):
+    for obs_idx in range(1, 10):
 
         env.reset()
 
@@ -42,6 +42,8 @@ def main():
             cropped_obs = normalize_observation(observation[:CROP_SIZE, CROP_W_OFFSET:CROP_SIZE+CROP_W_OFFSET, :])
 
             cropped_obs = cv2.resize(cropped_obs, dsize=(64, 64), interpolation=cv2.INTER_CUBIC).astype(np.float32)
+
+            np.clip(cropped_obs, 0.0, 1.0, cropped_obs)
 
             if i % 10 == 0:
                 print(i)

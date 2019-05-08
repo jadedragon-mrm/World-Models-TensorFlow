@@ -86,7 +86,7 @@ def train_vae():
 
     saver = tf.train.Saver(max_to_keep=1)
     step = global_step.eval()
-    training_data = data_iterator(batch_size=128)
+    training_data = data_iterator(batch_size=512)
 
     try:
         saver.restore(sess, tf.train.latest_checkpoint(model_path))
@@ -139,7 +139,7 @@ def load_vae():
         sess.run(init)
 
         saver = tf.train.Saver(max_to_keep=1)
-        training_data = data_iterator(batch_size=256)
+        training_data = data_iterator(batch_size=512)
 
         try:
             saver.restore(sess, tf.train.latest_checkpoint(model_path))
